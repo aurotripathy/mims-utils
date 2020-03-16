@@ -31,16 +31,6 @@ def execute(preset_file):
                                # stderr=subprocess.STDOUT,
                                stderr=sys.stdout.buffer)
                                # universal_newlines=True)
-    # while True:
-    #     return_code = process.poll()
-    #     if return_code is not None:
-    #         # Process has finished, read rest of the output 
-    #         # print('RETURN CODE', return_code)
-    #         output = process.stdout.readline()
-    #         for output in process.stdout.readlines():
-    #             if 'Training Throughput' in output:
-    #                 print('\t', output.strip())
-    #         break
     while True:
         output = process.stdout.readline()
         print(output)
@@ -56,7 +46,7 @@ def execute(preset_file):
 
 def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, model):
     """ 
-    generates another ini file with the specified precision and writes then
+    generates another ini file with the specified precision and model and writes then
     with the proper prefix
     """
     with open(base_preset_file) as f:
