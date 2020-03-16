@@ -4,6 +4,7 @@ import shutil
 import os
 import sys
 
+
 def print_precision_attribute(preset_file):
     with open(preset_file) as f:
         gpu_attributes = f.readlines()
@@ -13,6 +14,7 @@ def print_precision_attribute(preset_file):
 
 def execute_subp_run(preset_file):
     command_list = ["python", "mims.py", "-preset", preset_file]
+    print(command_list)
     response = subprocess.run(command_list, shell=True, check=False, stdout=subprocess.PIPE, universal_newlines=True)
     print('+++++Out\n')
     print(response.stdout)
@@ -64,19 +66,29 @@ def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, mod
     with open(gen_preset_file, 'w') as f:
         f.writelines(gpu_attributes)
 
-model = 'resnet50'
-gen_init_file_from_one('auro-presets/auro-gemm-fp32.ini', 'auro-presets/auro-gemm-bf16.ini',
-                       'mi100_bf16.csv', model) 
-gen_init_file_from_one('auro-presets/auro-gemm-fp32.ini', 'auro-presets/auro-gemm-fp16.ini',
-                       'mi100_fp16.csv', model) 
-    
+# main
 root_folder = 'auro-presets'
-# preset_files = ['auro-gemm-fp32.ini', 'auro-gemm-bf16.ini', 'auro-gemm-fp16.ini']
-preset_files = ['auro-r50-fwd.ini']
-# preset_files = ['auro-gemm-fp32.ini']
+prefix = 'auro'
+topology = 'chordal' # implied N=8 GPUs
+model = 'gemm'
+precision = ['fp32', 'bf16', 'fp16']
+file_ext = '.ini'
+arch = 'mi100'
+
+source_file = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[0], file_ext]))
+
+gen_file_1 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[1], file_ext]))
+gen_init_file_from_one(source_file, gen_file_1, arch + precision[1] + '.csv', model)
+
+gen_file_2 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[2], file_ext]))
+gen_init_file_from_one(source_file, gen_file_2, arch + precision[2], model) 
+    
+preset_files = [source_file, gen_file_1, gen_file_2]
+
+# preset_files = [gen_file_1]
+
 for preset_file in preset_files:
-    print_precision_attribute(os.path.join(root_folder, preset_file))
-    # execute(os.path.join(root_folder, preset_file))
-    execute_subp_run(os.path.join(root_folder, preset_file))
+    print_precision_attribute(preset_file)
+    execute_subp_run(preset_file)
     
 
