@@ -25,13 +25,15 @@ def execute_subp_run(preset_file):
     command_list = ["python", "mims.py", "-preset", preset_file]
     print(command_list)
     response = subprocess.run(command_list, shell=True, check=False, stdout=subprocess.PIPE, universal_newlines=True)
-    print('-----Error\n')
-    print(response.stderr)
-    print('===== Return Code\n')
-    print(response.returncode)
+    if response.stderr:
+        print('-----Error\n')
+        print(response.stderr)
+    if response.returncode != 1:
+        print('===== Return Code\n')
+        print(response.returncode)
     # print filtered response
     response = filter_response(response.stdout)
-    print('+++++Out\n')
+    print('+++++Result')
     print(response)
  
 
