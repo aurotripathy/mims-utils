@@ -3,6 +3,7 @@ from pathlib import Path
 import shutil
 import os
 import sys
+import argparse
 
 
 def print_precision_attribute(preset_file):
@@ -66,11 +67,22 @@ def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, mod
     with open(gen_preset_file, 'w') as f:
         f.writelines(gpu_attributes)
 
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Provide the arguments for collecting data from MIMS')
+    parser.add_argument('-m', '--model', type=str, required=True, help='The NN model we are using')
+
+    args = parser.parse_args()
+    print(args)
+    return args
+
+
 # main
+args = get_args()
 root_folder = 'auro-presets'
 prefix = 'auro'
 topology = 'chordal' # implied N=8 GPUs
-model = 'gemm'
+model = args.model
 precision = ['fp32', 'bf16', 'fp16']
 file_ext = '.ini'
 arch = 'mi100'
