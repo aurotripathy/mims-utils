@@ -26,14 +26,14 @@ def execute_subp_run(preset_file):
     print(command_list)
     response = subprocess.run(command_list, shell=True, check=False, stdout=subprocess.PIPE, universal_newlines=True)
     if response.stderr:
-        print('-----Error\n')
+        print('-----Error-----')
         print(response.stderr)
     if response.returncode != 1:
-        print('===== Return Code\n')
+        print('===== Return Code=====')
         print(response.returncode)
     # print filtered response
     filtered_response = filter_response(response.stdout)
-    print('+++++Result')
+    print('+++++Result+++++')
     print(filtered_response)
  
 
@@ -48,13 +48,13 @@ def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, mod
         for i, attribute in enumerate(gpu_attributes):
             if 'cBoxConfs' in attribute:
                 gpu_attributes[i] = 'cBoxConfs' + '=' + precision_csv + '\n'
-                print('Changed attribute:', gpu_attributes[i].strip())
+                # print('Changed attribute:', gpu_attributes[i].strip())
             if 'cBoxModels' in attribute:
                 gpu_attributes[i] = 'cBoxModels' + '=' + model + '\n'
-                print('Changed attribute:', gpu_attributes[i])
+                # print('Changed attribute:', gpu_attributes[i])
             if 'chBoxTraining' in attribute:
                 gpu_attributes[i] = 'chBoxTraining' + '=' + 'true' + '\n'
-                print('Changed attribute:', gpu_attributes[i])
+                # print('Changed attribute:', gpu_attributes[i])
     with open(gen_preset_file, 'w') as f:
         f.writelines(gpu_attributes)
 
