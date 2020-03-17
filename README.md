@@ -2,8 +2,8 @@ Automating data-collection from MIMS
 
 Provide the topology and the model
 
-python automate.py -t 2h4p -m gemm
+<code>python automate.py -t 2h4p -m gemm</code>
 
 or 
 
-python automate.py --topology chordal --model gemm
+<code>python automate.py --topology chordal --model gemm</code>
