@@ -70,20 +70,21 @@ def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, mod
         for i, attribute in enumerate(gpu_attributes):
             if 'cBoxConfs' in attribute:
                 gpu_attributes[i] = 'cBoxConfs' + '=' + precision_csv + '\n'
-                print('Using csv file:', gpu_attributes[i].strip())
+                print('Changed attribute:', gpu_attributes[i].strip())
             if 'cBoxModels' in attribute:
                 gpu_attributes[i] = 'cBoxModels' + '=' + model + '\n'
-                print('Using model:' , model)
+                print('Changed attribute:', gpu_attributes[i])
             if 'chBoxTraining' in attribute:
-                gpu_attributes[i] = 'chBoxTraining' + '=' + 'True' + '\n'
-                print('Using model:' , model)
+                gpu_attributes[i] = 'chBoxTraining' + '=' + 'true' + '\n'
+                print('Changed attribute:', gpu_attributes[i])
     with open(gen_preset_file, 'w') as f:
         f.writelines(gpu_attributes)
 
 
 def get_args():
     parser = argparse.ArgumentParser(description='Provide the arguments for collecting data from MIMS')
-    parser.add_argument('-m', '--model', type=str, required=True, help='The NN model we are using')
+    parser.add_argument('-m', '--model', type=str, choices=['gemm', 'resnet50', 'resnext101_32x4d'],
+                        required=True, help='The NN model we are using')
 
     args = parser.parse_args()
     print(args)
@@ -98,15 +99,20 @@ topology = 'chordal' # implied N=8 GPUs
 model = args.model
 precision = ['fp32', 'bf16', 'fp16']
 file_ext = '.ini'
-arch = 'mi100'
+arch = 'mi100_'
 
 source_file = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[0], file_ext]))
+if os.path.isfile(source_file):
+    print (source_file, 'exist...proceeding')
+else:
+    print ("File", source_file, 'not exist, stopping')
+    exit(2)
 
 gen_file_1 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[1], file_ext]))
 gen_init_file_from_one(source_file, gen_file_1, arch + precision[1] + '.csv', model)
 
 gen_file_2 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[2], file_ext]))
-gen_init_file_from_one(source_file, gen_file_2, arch + precision[2], model) 
+gen_init_file_from_one(source_file, gen_file_2, arch + precision[2] + '.csv', model) 
     
 preset_files = [source_file, gen_file_1, gen_file_2]
 
