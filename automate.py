@@ -83,7 +83,9 @@ def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, mod
 
 def get_args():
     parser = argparse.ArgumentParser(description='Provide the arguments for collecting data from MIMS')
-    parser.add_argument('-m', '--model', type=str, choices=['gemm', 'resnet50', 'resnext101_32x4d'],
+    parser.add_argument('-t', '--topology', type=str, choices=['chordal', '2h4p'],
+                        required=True, help='The tolopoly, chordal or fully connected two hives')
+    parser.add_argument('-m', '--model', type=str, choices=['gemm', 'resnet50', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'transformer'],
                         required=True, help='The NN model we are using')
 
     args = parser.parse_args()
@@ -95,7 +97,7 @@ def get_args():
 args = get_args()
 root_folder = 'auro-presets'
 prefix = 'auro'
-topology = 'chordal' # implied N=8 GPUs
+topology = args.topology # implied N=8 GPUs
 model = args.model
 precision = ['fp32', 'bf16', 'fp16']
 file_ext = '.ini'
@@ -105,7 +107,7 @@ source_file = os.path.join(root_folder, '_'.join([prefix, topology, model, preci
 if os.path.isfile(source_file):
     print (source_file, 'exist...proceeding')
 else:
-    print ("File", source_file, 'not exist, stopping')
+    print ("File", source_file, 'does not exist, stopping')
     exit(2)
 
 gen_file_1 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[1], file_ext]))
