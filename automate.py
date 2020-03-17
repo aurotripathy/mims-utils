@@ -32,33 +32,11 @@ def execute_subp_run(preset_file):
         print('===== Return Code\n')
         print(response.returncode)
     # print filtered response
-    response = filter_response(response.stdout)
+    filtered_response = filter_response(response.stdout)
     print('+++++Result')
-    print(response)
+    print(filtered_response)
  
 
-                
-def execute(preset_file):
-    command_list = ["python", "mims.py", "-preset", preset_file]
-    print("executing:", command_list) 
-    process = subprocess.Popen(command_list,
-                               shell=True,
-                               stdout=subprocess.PIPE,
-                               # stderr=subprocess.STDOUT,
-                               stderr=sys.stdout.buffer)
-                               # universal_newlines=True)
-    while True:
-        output = process.stdout.readline()
-        print(output)
-        if output == b'' and process.poll() is not None:
-            print(process.poll())
-            break
-        else:
-            print('looping')
-        if output:
-            print(output.strip())
-    rc = process.poll()
-    print('return code', rc)
 
 def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, model):
     """ 
