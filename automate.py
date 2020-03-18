@@ -17,7 +17,7 @@ def filter_response(response):
     response = response.splitlines()
     lines = []
     for line in response:
-        if "Training Throughput" in line:
+        if line.startswith("Training Throughput"):
             lines.append(line)
     return lines
 
