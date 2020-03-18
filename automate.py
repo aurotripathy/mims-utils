@@ -46,13 +46,13 @@ def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, mod
     with open(base_preset_file) as f:
         gpu_attributes = f.readlines()
         for i, attribute in enumerate(gpu_attributes):
-            if 'cBoxConfs' in attribute:
+            if attribute.startswith('cBoxConfs'):
                 gpu_attributes[i] = 'cBoxConfs' + '=' + precision_csv + '\n'
                 # print('Changed attribute:', gpu_attributes[i].strip())
-            if 'cBoxModels' in attribute:
+            if attribute.startswith('cBoxModels'):
                 gpu_attributes[i] = 'cBoxModels' + '=' + model + '\n'
                 # print('Changed attribute:', gpu_attributes[i])
-            if 'chBoxTraining' in attribute:
+            if attribute.startswith('chBoxTraining'):
                 gpu_attributes[i] = 'chBoxTraining' + '=' + 'true' + '\n'
                 # print('Changed attribute:', gpu_attributes[i])
     with open(gen_preset_file, 'w') as f:
