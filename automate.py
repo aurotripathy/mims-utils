@@ -65,7 +65,8 @@ def get_args():
                         required=True, help='The tolopoly, chordal or fully connected two hives')
     parser.add_argument('-m', '--model', type=str, choices=['gemm', 'resnet50', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'transformer'],
                         required=True, help='The NN model we are using')
-
+    parser.add_argument('-f', '--root-folder', type=str,
+                        required=True, help='The folder that has the .ini starter files')
     args = parser.parse_args()
     print(args)
     return args
@@ -73,7 +74,7 @@ def get_args():
 
 # main
 args = get_args()
-root_folder = 'auro-presets'
+root_folder = args.root_folder
 prefix = 'auro'
 topology = args.topology # implied N=8 GPUs
 model = args.model
