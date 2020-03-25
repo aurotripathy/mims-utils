@@ -1,17 +1,20 @@
 #### Automating data-collection from MIMS
 
-Provide the topology and the model
+```
+C:\Users\autrip\mims_new\MIMS_AP>python automate.py --help
+usage: automate.py [-h] -t {chordal,2h4p} -m
+                   {gemm,resnet50,resnext101_32x4d,resnext101_32x8d,resnext101_64x4d,transformer}
+                   -f ROOT_FOLDER
 
-<code>python automate.py -t 2h4p -m gemm</code>
+Provide the arguments for collecting data from MIMS
 
-or 
+optional arguments:
+  -h, --help            show this help message and exit
+  -t {chordal,2h4p}, --topology {chordal,2h4p}
+                        The tolopoly, chordal or fully connected two hives
+  -m {gemm,resnet50,resnext101_32x4d,resnext101_32x8d,resnext101_64x4d,transformer}, --model {gemm,resnet50,resnext101_32x4d,resnext101_32x8d,resnext101_64x4d,transformer}
+                        The NN model we are using
+  -f ROOT_FOLDER, --root-folder ROOT_FOLDER
+                        The folder that has the .ini starter files
 
-<code>python automate.py --topology chordal --model gemm</code>
-
-Topologies currently available:
-
-<code>['chordal', '2h4p']</code>
-
-Models currently available:
-
-<code> ['gemm', 'resnet50', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'transformer']</code>
+```
