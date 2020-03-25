@@ -38,7 +38,7 @@ def execute_subp_run(preset_file):
  
 
 
-def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, model):
+def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, precision, model):
     """ 
     generates another ini file with the specified precision and model and writes then
     with the proper prefix
@@ -55,6 +55,8 @@ def gen_init_file_from_one(base_preset_file, gen_preset_file, precision_csv, mod
             if attribute.startswith('chBoxTraining'):
                 gpu_attributes[i] = 'chBoxTraining' + '=' + 'true' + '\n'
                 # print('Changed attribute:', gpu_attributes[i])
+            if attribute.startswith('cBoxDataFormat'):
+                gpu_attributes[i] = 'cBoxDataFormat' + '=' + precision.upper() + '\n'
     with open(gen_preset_file, 'w') as f:
         f.writelines(gpu_attributes)
 
@@ -90,10 +92,10 @@ else:
     exit(2)
 
 gen_file_1 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[1], file_ext]))
-gen_init_file_from_one(source_file, gen_file_1, arch + precision[1] + '.csv', model)
+gen_init_file_from_one(source_file, gen_file_1, arch + precision[1] + '.csv', precision[1], model)
 
 gen_file_2 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[2], file_ext]))
-gen_init_file_from_one(source_file, gen_file_2, arch + precision[2] + '.csv', model) 
+gen_init_file_from_one(source_file, gen_file_2, arch + precision[2] + '.csv', precision[2], model) 
     
 preset_files = [source_file, gen_file_1, gen_file_2]
 
