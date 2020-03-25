@@ -33,8 +33,9 @@ def execute_subp_run(preset_file):
         print(response.returncode)
     # print filtered response
     filtered_response = filter_response(response.stdout)
-    print('+++++Result+++++')
+    print('+++++++++++++++Result+++++++++++++++')
     print(filtered_response)
+    print('------------------------------------')
  
 
 
@@ -65,7 +66,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='Provide the arguments for collecting data from MIMS')
     parser.add_argument('-t', '--topology', type=str, choices=['chordal', '2h4p'],
                         required=True, help='The tolopoly, chordal or fully connected two hives')
-    parser.add_argument('-m', '--model', type=str, choices=['gemm', 'resnet50', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'transformer'],
+    parser.add_argument('-m', '--model', type=str, choices=['all-models', 'gemm', 'resnet50', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'transformer'],
                         required=True, help='The NN model we are using')
     parser.add_argument('-f', '--root-folder', type=str,
                         required=True, help='The folder that has the .ini starter files')
@@ -80,6 +81,12 @@ root_folder = args.root_folder
 prefix = 'auro'
 topology = args.topology # implied N=8 GPUs
 model = args.model
+if model == 'all-models':
+    model_list = ['gemm', 'resnet50', 'resnext101_32x4d', 'resnext101_32x8d', 'resnext101_64x4d', 'transformer']
+else:
+    model_list = [model]
+
+
 precision = ['fp32', 'bf16', 'fp16']
 file_ext = '.ini'
 arch = 'mi100_'
@@ -91,18 +98,22 @@ else:
     print ("File", source_file, 'does not exist, stopping')
     exit(2)
 
-gen_file_1 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[1], file_ext]))
-gen_init_file_from_one(source_file, gen_file_1, arch + precision[1] + '.csv', precision[1], model)
+for model in model_list:
+    print('Generating the metrics for model:', model)
+    print('=================================')
 
-gen_file_2 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[2], file_ext]))
-gen_init_file_from_one(source_file, gen_file_2, arch + precision[2] + '.csv', precision[2], model) 
+    gen_file_1 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[1], file_ext]))
+    gen_init_file_from_one(source_file, gen_file_1, arch + precision[1] + '.csv', precision[1], model)
+
+    gen_file_2 = os.path.join(root_folder, '_'.join([prefix, topology, model, precision[2], file_ext]))
+    gen_init_file_from_one(source_file, gen_file_2, arch + precision[2] + '.csv', precision[2], model) 
     
-preset_files = [source_file, gen_file_1, gen_file_2]
+    preset_files = [source_file, gen_file_1, gen_file_2]
 
-# preset_files = [gen_file_1]
+    # preset_files = [gen_file_1]
 
-for preset_file in preset_files:
-    print_precision_attribute(preset_file)
-    execute_subp_run(preset_file)
+    for preset_file in preset_files:
+        print_precision_attribute(preset_file)
+        execute_subp_run(preset_file)
     
 
